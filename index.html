@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ireland Trip Dashboard</title>
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+.modal-enter { animation: fadeIn .3s ease-out forwards; }
+@keyframes fadeIn {
+  from { opacity:0; transform:scale(.96); }
+  to { opacity:1; transform:scale(1); }
+}
+.slide-left { animation: slideLeft .35s ease forwards; }
+.slide-right { animation: slideRight .35s ease forwards; }
+@keyframes slideLeft {
+  from { opacity:0; transform:translateX(40px); }
+  to { opacity:1; transform:translateX(0); }
+}
+@keyframes slideRight {
+  from { opacity:0; transform:translateX(-40px); }
+  to { opacity:1; transform:translateX(0); }
+}
+</style>
+</head>
+
+<body class="bg-slate-100 font-sans">
+
+<div class="max-w-6xl mx-auto p-6">
+<h1 class="text-3xl font-bold text-center mb-2">Ireland Master Dashboard</h1>
+<h2 class="text-center text-slate-600 mb-6">May 27 – June 5, 2026</h2>
+<div id="calendar" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-5"></div>
+</div>
+
+<!-- Modal -->
+<div id="modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center p-4">
+<div id="modalCard" class="bg-white max-w-2xl w-full rounded-xl shadow-xl p-6 relative modal-enter overflow-y-auto max-h-[90vh]">
+
+<button onclick="closeModal()" class="absolute top-3 right-3 text-xl">&times;</button>
+
+<div id="headerSection" class="mb-4"></div>
+<div id="dayContainer"></div>
+
+<div class="flex justify-between mt-6">
+<button onclick="navigateDay(-1)" class="bg-slate-200 px-4 py-2 rounded hover:bg-slate-300">← Previous</button>
+<button onclick="navigateDay(1)" class="bg-slate-200 px-4 py-2 rounded hover:bg-slate-300">Next →</button>
+</div>
+
+</div>
+</div>
+
+<script>
+
+const tripDays = [
+{
+date:"2026-05-27",
+label:"May 27",
+title:"Arrival – Belfast",
+dress:"Travel",
+lat:54.5973, lon:-5.9301,
+agenda:[
+"Arrive Belfast",
+"Rental car pickup",
+"Hotel check-in",
+"Light dinner nearby",
+"Early evening reset"
+]
+},
+{
+date:"2026-05-28",
+label:"May 28",
+title:"Antrim Coast + Giant’s Causeway",
+dress:"Outdoor",
+lat:55.2408, lon:-6.5116,
+agenda:[
+"Drive Causeway Coastal Route",
+"Dunluce Castle stop",
+"Giant’s Causeway exploration",
+"Clifftop viewpoints",
+"17:45 Dinner at hotel"
+]
+},
+{
+date:"2026-05-29",
+title:"Rathlin Island",
+label:"May 29",
+dress:"Outdoor",
+lat:55.2891, lon:-6.1876,
+agenda:[
+"Morning ferry to Rathlin",
+"West Light Seabird Centre",
+"Clifftop walks",
+"Return ferry",
+"Dinner at Central Wine Bar"
+]
+},
+{
+date:"2026-05-30",
+label:"May 30",
+title:"Belfast Exploration",
+dress:"Smart Casual",
+lat:54.6016, lon:-5.9287,
+agenda:[
+"Tweed / Donegal shopping",
+"St. George’s Market",
+"Cathedral Quarter",
+"Dinner at Waterman"
+]
+},
+{
+date:"2026-05-31",
+label:"May 31",
+title:"Howth + Carton House",
+dress:"Outdoor",
+lat:53.3870, lon:-6.0653,
+agenda:[
+"Scenic coastal drive",
+"Howth Cliff Walk",
+"12:30 Lunch at King Sitric",
+"Drive to Carton House",
+"18:00 Dinner at Kathleen’s Kitchen"
+]
+},
+{
+date:"2026-06-01",
+label:"June 1",
+title:"Carton House Leisure",
+dress:"Casual",
+lat:53.3816, lon:-6.5918,
+agenda:[
+"Estate grounds exploration",
+"Optional golf / spa / cycling",
+"Group activities",
+"Estate dinner"
+]
+},
+{
+date:"2026-06-02",
+label:"June 2",
+title:"Wicklow Mountains",
+dress:"Outdoor",
+lat:53.0103, lon:-6.3279,
+agenda:[
+"Drive via Sally Gap",
+"Glendalough ruins",
+"12:30 Lunch at Wicklow Heather",
+"Guinness Lake stop",
+"19:15 Dinner at Fish Shop"
+]
+},
+{
+date:"2026-06-03",
+label:"June 3",
+title:"Flex Day",
+dress:"Smart Casual",
+lat:53.3498, lon:-6.2603,
+agenda:[
+"Estate morning leisure",
+"Optional Dublin excursion",
+"Shopping / exploring",
+"Farewell dinner"
+]
+},
+{
+date:"2026-06-04",
+label:"June 4",
+title:"Final Day Ireland",
+dress:"Smart Casual",
+lat:53.3816, lon:-6.5918,
+agenda:[
+"Relaxed morning",
+"Packing",
+"Estate time",
+"Final dinner"
+]
+},
+{
+date:"2026-06-05",
+label:"June 5",
+title:"Departure",
+dress:"Travel",
+lat:53.4213, lon:-6.2701,
+agenda:[
+"Checkout",
+"Drive to Dublin Airport",
+"Rental car return",
+"Flight home"
+]
+}
+];
+
+let currentIndex = 0;
+
+function weatherIcon(code){
+if(code === 0) return "☀️";
+if(code <= 2) return "🌤";
+if(code === 3) return "☁️";
+if(code <= 65) return "🌧";
+if(code <= 82) return "🌦";
+if(code <= 99) return "⛈";
+return "🌥";
+}
+
+function loadCalendar(){
+const cal=document.getElementById("calendar");
+tripDays.forEach((day,index)=>{
+const card=document.createElement("div");
+card.className="bg-white p-4 rounded-lg shadow hover:shadow-lg transition cursor-pointer";
+card.onclick=()=>showDay(index);
+
+card.innerHTML=`
+<div class="font-bold text-lg">${day.label}</div>
+<div class="text-sm text-slate-600 mb-2">${day.title}</div>
+<div id="weather-${index}" class="text-xs text-slate-500 mb-2">Loading...</div>
+<div id="pack-${index}" class="text-xs text-slate-700"></div>
+<div id="outfit-${index}" class="text-xs text-slate-600 mt-2"></div>
+`;
+
+cal.appendChild(card);
+fetchDailyWeather(index);
+});
+}
+
+function fetchDailyWeather(index){
+const day=tripDays[index];
+fetch(`https://api.open-meteo.com/v1/forecast?latitude=${day.lat}&longitude=${day.lon}&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,weathercode,windspeed_10m_max&timezone=Europe/Dublin`)
+.then(r=>r.json())
+.then(data=>{
+const hi=(data.daily.temperature_2m_max[0]*9/5+32).toFixed(0);
+const lo=(data.daily.temperature_2m_min[0]*9/5+32).toFixed(0);
+const rain=data.daily.precipitation_probability_max[0];
+const wind=data.daily.windspeed_10m_max[0];
+const code=data.daily.weathercode[0];
+tripDays[index].forecast={hi,lo,rain,wind,code};
+
+document.getElementById(`weather-${index}`).innerHTML=
+`${weatherIcon(code)} ${hi}°/${lo}° • 🌧 ${rain}% • 💨 ${wind} mph`;
+
+document.getElementById(`pack-${index}`).innerHTML=
+`<strong>What to Pack:</strong> ${generatePackSummary(day)}`;
+
+document.getElementById(`outfit-${index}`).innerHTML=
+`<strong>Outfit:</strong> ${generateOutfitSummary(day)}`;
+});
+}
+
+function generatePackSummary(day){
+let f=day.forecast||{};
+let items=[];
+if(day.dress==="Outdoor") items.push("Waterproof jacket","Walking shoes");
+if(day.dress==="Smart Casual") items.push("Polished dinner option");
+if(day.dress==="Travel") items.push("Comfortable travel layers");
+if(f.rain>40) items.push("Umbrella");
+if(f.wind>15) items.push("Scarf");
+if(f.wind>20) items.push("Hat");
+return items.join(", ");
+}
+
+function generateOutfitSummary(day){
+let f=day.forecast||{};
+let outfit=[];
+if(f.hi<55) outfit.push("Warm sweater");
+if(f.hi>=55 && f.hi<=68) outfit.push("Light sweater + jacket");
+if(f.hi>68) outfit.push("Breathable layers");
+if(day.dress==="Smart Casual") outfit.push("Elevated dinner look");
+if(day.dress==="Outdoor") outfit.push("Practical outdoor wear");
+if(day.dress==="Travel") outfit.push("Relaxed travel outfit");
+return outfit.join(", ");
+}
+
+function showDay(index){
+currentIndex=index;
+updateHeader(tripDays[index].label);
+renderDay(tripDays[index]);
+document.getElementById("modal").classList.remove("hidden");
+document.getElementById("modal").classList.add("flex");
+}
+
+function renderDay(day){
+let f=day.forecast||{};
+let agendaHTML=day.agenda.map(item=>`<li>${item}</li>`).join("");
+document.getElementById("dayContainer").innerHTML=`
+<h2 class="text-2xl font-bold">${day.title}</h2>
+<div class="text-sm mb-2">Dress Level: <span class="font-semibold">${day.dress}</span></div>
+<div class="text-sm mb-3">
+${weatherIcon(f.code||0)} ${f.hi||"--"}°/${f.lo||"--"}° • 🌧 ${f.rain||"--"}% • 💨 ${f.wind||"--"} mph
+</div>
+<div class="border-t pt-3">
+<h3 class="font-semibold mb-2">Today's Agenda</h3>
+<ul class="list-disc ml-6 mb-4 space-y-1">${agendaHTML}</ul>
+<strong>What to Pack:</strong> ${generatePackSummary(day)}<br><br>
+<strong>Outfit Suggestion:</strong> ${generateOutfitSummary(day)}
+</div>
+`;
+}
+
+function navigateDay(dir){
+let newIndex=currentIndex+dir;
+if(newIndex>=0 && newIndex<tripDays.length){
+showDay(newIndex);
+}
+}
+
+function updateHeader(label){
+const now=new Date();
+const irelandTime=now.toLocaleTimeString("en-US",{timeZone:"Europe/Dublin"});
+document.getElementById("headerSection").innerHTML=
+`<div class="text-lg font-semibold">${label}, 2026</div>
+<div class="text-sm text-slate-500">Local Time (Ireland): ${irelandTime}</div>`;
+}
+
+function closeModal(){
+document.getElementById("modal").classList.add("hidden");
+}
+
+loadCalendar();
+
+</script>
+</body>
+</html>
