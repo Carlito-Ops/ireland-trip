@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ireland Trip Dashboard v12</title>
+<title>Ireland Trip Dashboard v13</title>
 <script src="https://cdn.tailwindcss.com"></script>
 
 <style>
@@ -52,9 +52,9 @@ dress:"Outdoor",
 lat:53.0103, lon:-6.3279,
 agenda:[
 "09:00 – Depart Carton House via N81 → Sally Gap",
-"10:15 – Guinness Lake (Lough Tay) overlook – 15 min stop (weather dependent)",
-"10:45–12:15 – Glendalough Monastic City exploration",
-"12:15–12:45 – Upper Lake micro‑hike (flat lakeside walk, 30 min)",
+"10:15 – Guinness Lake overlook (weather dependent, 15 min)",
+"10:45–12:15 – Glendalough Monastic City",
+"12:15–12:45 – Upper Lake micro‑hike",
 "13:00–14:00 – Lunch at Wicklow Heather ✅",
 "14:30–15:45 – Powerscourt Waterfall",
 "16:00–17:00 – Scenic descent via Enniskerry",
@@ -67,23 +67,23 @@ agenda:[
 {
 date:"2026-06-03",
 label:"June 3",
-title:"Spa + Dublin Shopping",
+title:"Dublin Shopping Day",
 dress:"Smart Casual",
 lat:53.3498, lon:-6.2603,
 agenda:[
-"09:00 – Couples Massage (Carton House Spa)",
-"10:00–10:45 – Shower + change",
-"11:00 – Depart for Dublin",
-"11:45 – Arrive & park (Grafton/Drury area)",
-"Cleo (sweaters)",
+"08:30 – Depart Carton House",
+"~09:15 – Arrive & park (Grafton / Drury area)",
+"09:30 – Cleo ✅",
+"10:15 – DESIGNYARD Contemporary Jewelry ✅",
+"11:00 – Kilkenny Design (her tweed jacket) ✅",
+"11:45 – Louis Copeland (your tweed jacket) ✅",
 "12:30 – Lunch at Seafood Café by Niall Sabongi ✅",
-"Kilkenny Design / Aran Sweater Market",
-"Louis Copeland (tweed jacket)",
-"Indigo & Cloth (if time)",
-"16:30 – Depart Dublin (locked departure time)",
+"13:45 – Indigo & Cloth ✅",
+"14:15–16:15 – Drury Street & South William sweep",
+"16:30 – Depart Dublin (locked departure)",
 "~17:15–17:30 – Arrive Carton House",
 "Freshen up",
-"18:15 – Ride pickup in lobby",
+"18:15 – Ride pickup (Lobby)",
 "18:30 – Dinner at Avenue Café ✅"
 ]
 },
@@ -91,15 +91,15 @@ agenda:[
 {
 date:"2026-06-04",
 label:"June 4",
-title:"Howth Puffins + King Sitric",
+title:"Howth – Private Puffin Charter",
 dress:"Smart Casual",
 lat:53.3870, lon:-6.0653,
 agenda:[
 "08:30 – Depart Carton House",
 "09:45 – Harbour walk + coffee",
-"11:00–12:00 – Ireland’s Eye boat tour",
-"12:30 – Lunch at King Sitric ✅",
-"15:30 – Depart Howth (latest)",
+"11:00 – Private Ireland’s Eye Puffin Charter ✅",
+"12:30–13:45 – Lunch at King Sitric ✅",
+"15:30 – Depart Howth (latest safe departure)",
 "~16:30–16:45 – Arrive Carton House",
 "Clean up + change",
 "17:30 – Group Photo",
@@ -219,10 +219,10 @@ handleSwipe();
 
 function handleSwipe(){
 if(touchEndX < touchStartX - 50){
-navigateDay(1); // Swipe left → next
+navigateDay(1);
 }
 if(touchEndX > touchStartX + 50){
-navigateDay(-1); // Swipe right → previous
+navigateDay(-1);
 }
 }
 
